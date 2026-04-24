@@ -3,178 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHASH General Trading - Main Menu</title>
+    <title>SHASH Management System</title>
     <style>
-        :root { 
-            --primary: #1a2a6c; 
-            --gold: #f39c12; 
-            --glass: rgba(255, 255, 255, 0.12);
+        :root {
+            --primary: #ffffff;
+            --accent: #f1c40f;
+            --card-bg: rgba(255, 255, 255, 0.1);
         }
-        
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
             background-attachment: fixed;
-            color: white; 
+            color: white;
+            display: flex;
+            justify-content: center;
             min-height: 100vh;
         }
-        
-        .hero { 
-            padding: 40px 20px; 
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 30px 20px;
             text-align: center;
         }
 
-        .logo-img { 
-            width: 110px; 
-            height: 110px; 
-            border: 3px solid var(--gold); 
-            border-radius: 50%; 
-            background: white; 
-            object-fit: cover;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        /* Header Section */
+        header {
+            margin-bottom: 40px;
         }
 
-        h1 { 
-            margin: 15px 0 5px; 
-            font-size: 22px; 
+        .logo-box {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 3px solid var(--accent);
+        }
+
+        .logo-box img { width: 80%; height: 80%; object-fit: contain; }
+
+        h1 {
+            font-size: 24px;
             font-weight: 800;
-            text-transform: uppercase; 
-            letter-spacing: 1.5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .sub-text {
-            font-size: 13px;
-            opacity: 0.9;
-            color: #ecf0f1;
-            margin-bottom: 30px;
-        }
-
-        .main-grid { 
-            display: grid; 
-            grid-template-columns: 1fr; 
-            gap: 15px; 
-            padding: 0 20px 40px; 
-            max-width: 500px; 
-            margin: auto; 
-        }
-
-        .section-title { 
-            text-align: left; 
-            font-size: 14px; 
-            font-weight: bold; 
-            color: var(--gold); 
-            margin-top: 20px; 
+            margin: 10px 0 5px;
+            letter-spacing: 1px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
             text-transform: uppercase;
-            border-left: 3px solid var(--gold);
-            padding-left: 10px;
         }
 
-        .nav-card { 
-            background: var(--glass); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        .logo-box {
+    width: 100px;
+    height: 100px;
+    background: #ffffff; /* Duubee adii qulqulluu */
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    border: 3px solid #f1c40f; /* Halluu Gold */
+    overflow: hidden; /* Akka logoon boksa keessaa hin baane */
+}
+
+.logo-box img {
+    width: 90%; 
+    height: 90%; 
+    object-fit: contain;
+}
+
+        .tagline {
+            font-size: 13px;
+            color: var(--accent);
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* Menu Design */
+        .menu-section {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding-left: 5px;
+            letter-spacing: 1px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .nav-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 18px; 
-            border-radius: 15px; 
-            text-decoration: none; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            transition: 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .nav-card:active { transform: scale(0.97); }
-
-        .nav-card span { 
-            color: white; 
-            font-weight: 600; 
-            font-size: 16px; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .icon-circle { 
-            width: 45px; 
-            height: 45px; 
-            background: rgba(255,255,255,0.2); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 12px; 
-            font-size: 20px; 
-        }
-
-        .card-jilmaa { border-left: 5px solid #3498db; }
-        .card-foonii { border-left: 5px solid #e74c3c; }
-        .card-liqii { border-left: 5px solid #f1c40f; }
-        .card-stock { border-left: 5px solid #2ecc71; }
-
-        .footer {
             padding: 20px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .nav-card:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .icon-wrapper {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .card-info { flex-grow: 1; }
+
+        .card-title {
+            display: block;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .card-arrow {
+            font-size: 18px;
+            opacity: 0.5;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
             font-size: 11px;
-            opacity: 0.6;
-            text-align: center;
+            opacity: 0.5;
         }
     </style>
 </head>
 <body>
 
-<div class="hero">
-    <img src="logo_shash.png" class="logo-img" alt="Logo">
-    <h1>SHASH General Trading</h1>
-    <p class="sub-text">Hordoffii Daldala Maatii - Harar</p>
-</div>
-
-<div class="main-grid">
-    <div class="section-title">Hojii Gurgurtaa</div>
-    
-    <a href="Dukkaana_Gurgurtaa.html" class="nav-card card-jilmaa">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="icon-circle">📦</div>
-            <span>Dukkaana Jilmaa</span>
+<div class="container">
+    <header>
+        <div class="logo-box">
+            <img src="Shash.png" alt="Logo">
         </div>
-        <span style="opacity: 0.5;">➔</span>
-    </a>
+        <h1>SHASH Trading</h1>
+        <p class="tagline">Hordoffii Daldala Maatii - Harar</p>
+    </header>
 
-    <a href="Gurgurtaa.html" class="nav-card card-foonii">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="icon-circle">🍖</div>
-            <span>Mana Foonii Wara Shaash</span>
-        </div>
-        <span style="opacity: 0.5;">➔</span>
-    </a>
+    <div class="menu-section">
+        <p class="section-label">Gurgurtaa Adda Addaa</p>
+        
+        <a href="Dukkaana_Gurgurtaa.html" class="nav-card">
+            <div class="icon-wrapper">📦</div>
+            <div class="card-info">
+                <span class="card-title">Dukkaana Jilmaa</span>
+            </div>
+            <span class="card-arrow">➜</span>
+        </a>
 
-    <div class="section-title">Hordoffii & Baasii</div>
+        <a href="Gurgurtaa.html" class="nav-card">
+            <div class="icon-wrapper">🍖</div>
+            <div class="card-info">
+                <span class="card-title">Mana Foonii Wara Shaash</span>
+            </div>
+            <span class="card-arrow">➜</span>
+        </a>
 
-    <a href="Dukkaana_Liqii.html" class="nav-card card-liqii">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="icon-circle">💳</div>
-            <span>Galmee Liqii</span>
-        </div>
-        <span style="opacity: 0.5;">➔</span>
-    </a>
+        <p class="section-label" style="margin-top: 30px;">Hordoffii & Baasii</p>
 
-    <a href="Dukkaana_Stock.html" class="nav-card card-stock">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="icon-circle">📊</div>
-            <span>Hordoffii Stock</span>
-        </div>
-        <span style="opacity: 0.5;">➔</span>
-    </a>
+        <a href="Dukkaana_Liqii.html" class="nav-card">
+            <div class="icon-wrapper">💳</div>
+            <div class="card-info">
+                <span class="card-title">Galmee Liqii (Credit)</span>
+            </div>
+            <span class="card-arrow">➜</span>
+        </a>
 
-    <a href="Dukkaana_Baasii.html" class="nav-card">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="icon-circle">💸</div>
-            <span>Baasii Waliigalaa</span>
-        </div>
-        <span style="opacity: 0.5;">➔</span>
-    </a>
-</div>
+        <a href="Dukkaana_Stock.html" class="nav-card">
+            <div class="icon-wrapper">📊</div>
+            <div class="card-info">
+                <span class="card-title">Hordoffii Stock</span>
+            </div>
+            <span class="card-arrow">➜</span>
+        </a>
 
-<div class="footer">
-    © 2026 SHASH PLC | Developed by Ezu Tech
+        <a href="Dukkaana_Baasii.html" class="nav-card">
+            <div class="icon-wrapper">💸</div>
+            <div class="card-info">
+                <span class="card-title">Galmee Baasii</span>
+            </div>
+            <span class="card-arrow">➜</span>
+        </a>
+    </div>
+
+    <footer>
+        SHASH General Trading PLC Management System<br>
+        Developed by Ezu Tech © 2026
+    </footer>
 </div>
 
 </body>
