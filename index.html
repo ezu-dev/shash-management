@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHASH Management System</title>
+    <script>
+    window.onload = function() {
+    let access = localStorage.getItem("shash_access");
+    if (access !== "granted") {
+        let pass = prompt("Maaloo Password Maatii Galchi:");
+        if (pass === "Shaash_2026") {
+            localStorage.setItem("shash_access", "granted");
+        } else {
+            alert("Password Dogoggora! Deebisii yaali.");
+            window.location.reload();
+        }
+    }
+}
+        </script>
     <style>
         :root {
             --primary: #ffffff;
