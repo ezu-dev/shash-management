@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hordoffii Liqii - SHASH General Trading</title>
+    <style>
+    .table-container {
+    width: 100%;
+    overflow-x: auto; /* Yoo gabatichi bal'ate akka gara cinaatti harkifamu godha */
+    -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    min-width: 500px; /* Gabatichi baay'ee akka hin dhiphanneef */
+    }
+    
+    /* Action button-onni akka wal dhiphisaniif */
+    .action-btn {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    }
+    
+    .action-btn button {
+    padding: 5px 8px;
+    font-size: 12px;
+    }
+        :root { --primary: #7f8c8d; --danger: #e74c3c; --success: #27ae60; --dark: #2c3e50; }
+        body { font-family: 'Segoe UI', sans-serif; background: #fdfdfd; margin: 0; padding: 10px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 3px solid var(--danger); margin-bottom: 20px; padding-bottom: 10px; }
+        .company-name { font-size: 24px; font-weight: bold; color: var(--dark); }
+
+        .dashboard { display: grid; grid-template-columns: 1fr; margin-bottom: 20px; }
+        .card { padding: 20px; border-radius: 12px; color: white; text-align: center; background: var(--danger); }
+        .card p { font-size: 26px; font-weight: bold; margin: 5px 0 0; }
+
+        .input-section { background: #fff5f5; padding: 20px; border-radius: 12px; border: 1px solid #fab1a0; margin-bottom: 20px; }
+        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        input { padding: 12px; border: 1px solid #ccc; border-radius: 8px; flex: 1; min-width: 150px; }
+        
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-add { background: var(--danger); color: white; }
+        .btn-print { background: #f1c40f; color: black; margin-top: 10px; }
+        .btn-home { background: #eee; color: #333; margin-top: 10px; text-decoration: none; display: block; text-align: center; line-height: 2.5; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: var(--dark); color: white; padding: 12px; text-align: left; }
+        td { border-bottom: 1px solid #eee; padding: 12px; font-size: 14px; }
+        .status-unpaid { color: #e74c3c; font-weight: bold; }
+        .status-paid { color: #27ae60; font-weight: bold; text-decoration: line-through; }
+
+        /* Signature section expanded for 3 people */
+        .signature-section { margin-top: 50px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: center; }
+        .sig-box { border-top: 1px solid #333; padding-top: 8px; font-size: 11px; font-weight: bold; color: #333; }
+
+        @media print {
+            .input-section, .btn-home, .action-btn { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="company-name">SHASH GENERAL TRADING PLC</div>
+        <p style="margin:5px 0; color: #e74c3c; font-weight: bold;">Galmee Hordoffii Liqii (Credit Record)</p>
+        <small id="currentDate"></small>
+    </header>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3 style="margin:0; font-size: 13px;">Waliigala Liqii Ala Jiru</h3>
+            <p id="totalDebt">0 ETB</p>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <div class="input-group">
+            <input type="text" id="debtorName" placeholder="Maqaa Nama Liqeeffatee...">
+            <input type="text" id="debtItem" placeholder="Meeshaa Fudhate...">
+            <input type="number" id="debtAmount" placeholder="Hamma Qarshii (ETB)...">
+        </div>
+        <button class="btn btn-add" onclick="addDebt()">Liqii Galmeessi</button>
+        <button class="btn btn-print" onclick="window.print()">Gabaasa Liqii Print Godhi</button>
+        <a href="index.html" class="btn btn-home">Gara Menu Guddaatti Deebi'i</a>
+    </div>
+
+    <div class="table-container">
+    <table>
+    <thead>
+    <tr>
+    <th>Lakk.</th>
+    <th>Maqaa Namaa</th>
+    <th>Meeshaa</th>
+    <th>Qarshii</th>
+    <th class="action-btn">Action</th>
+    </tr>
+    </thead>
+    <tbody id="debtTable"></tbody>
+    </table>
+    </div>
+    
+    <div class="signature-section">
+        <div class="sig-box">Mallattoo Nama Liqeeffatee</div>
+        <div class="sig-box">Mallattoo Kaasharii<br><small>(Mussii Muktaar)</small></div>
+        <div class="sig-box">Mallattoo Manager<br><small>(Munisaa Mohammed Ahmed)</small></div>
+    </div>
+</div>
+
+<script>
+    let debts = JSON.parse(localStorage.getItem("shashJilmaaDebts")) || [];
+
+    function updateUI() {
+        const tbody = document.getElementById("debtTable");
+        tbody.innerHTML = "";
+        let total = 0;
+
+        debts.forEach((d, i) => {
+            if(!d.paid) total += d.amount;
+            
+            tbody.innerHTML += `<tr>
+                <td>${i+1}</td>
+                <td>${d.name}</td>
+                <td>${d.item}</td>
+                <td class="${d.paid ? 'status-paid' : 'status-unpaid'}">${d.amount.toLocaleString()} ETB</td>
+                <td class="action-btn">
+                    <button onclick="togglePaid(${i})" style="background:${d.paid ? '#95a5a6' : '#27ae60'}; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">
+                        ${d.paid ? 'Deebisameera' : 'Kaffalame'}
+                    </button>
+                    <button onclick="deleteDebt(${i})" style="color:red; border:none; background:none; margin-left:10px; cursor:pointer;">✕</button>
+                </td>
+            </tr>`;
+        });
+
+        document.getElementById("totalDebt").innerText = total.toLocaleString() + " ETB";
+        localStorage.setItem("shashJilmaaDebts", JSON.stringify(debts));
+    }
+
+    function addDebt() {
+        const name = document.getElementById("debtorName").value;
+        const item = document.getElementById("debtItem").value;
+        const amount = parseFloat(document.getElementById("debtAmount").value);
+
+        if(name && amount) {
+            debts.push({ name, item: item || "-", amount, paid: false });
+            document.getElementById("debtorName").value = "";
+            document.getElementById("debtItem").value = "";
+            document.getElementById("debtAmount").value = "";
+            updateUI();
+        }
+    }
+
+    function togglePaid(i) {
+        debts[i].paid = !debts[i].paid;
+        updateUI();
+    }
+
+    function deleteDebt(i) {
+        if(confirm("Galmee liqii kana haquu barbaaddu?")) {
+            debts.splice(i, 1);
+            updateUI();
+        }
+    }
+
+    document.getElementById("currentDate").innerText = new Date().toLocaleString('om-ET');
+    updateUI();
+</script>
+
+</body>
+</html>

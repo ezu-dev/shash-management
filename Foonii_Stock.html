@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inveentarii - Mana Foonii Wara Shaash</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e67e22; --success: #27ae60; --gold: #f1c40f; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 10px; }
+        .container { max-width: 850px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; }
+        .logo-img { width: 120px; height: auto; }
+        .company-name { font-size: 26px; font-weight: bold; color: var(--primary); margin: 5px 0; }
+        
+        .timestamp-box { text-align: right; font-size: 13px; color: #555; font-weight: bold; margin-bottom: 10px; }
+
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .card { padding: 15px; border-radius: 12px; color: white; text-align: center; }
+        .card-total { background: var(--primary); }
+        .card-alert { background: var(--accent); }
+
+        .input-section { background: #f8f9fa; padding: 20px; border-radius: 15px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; flex: 1; min-width: 140px; }
+        
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-add { background: var(--success); color: white; }
+        .btn-print { background: var(--gold); color: black; margin-top: 10px; }
+        .btn-home { background: #eee; color: #333; margin-top: 10px; text-decoration: none; display: block; text-align: center; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: var(--primary); color: white; padding: 12px; text-align: left; }
+        td { border-bottom: 1px solid #eee; padding: 12px; font-size: 14px; }
+        
+        .status-badge { padding: 4px 8px; border-radius: 5px; font-size: 12px; font-weight: bold; }
+        .st-good { background: #d4edda; color: #155724; }
+        .st-bad { background: #f8d7da; color: #721c24; }
+
+        .signature-section { margin-top: 60px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; text-align: center; }
+        .sig-box { border-top: 1px solid #000; padding-top: 8px; font-size: 11px; font-weight: bold; }
+
+        @media print {
+            .input-section, .btn-home, .delete-btn { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="https://raw.githubusercontent.com/ezu-tech/wara-shaash/main/logo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1046/1046769.png'" class="logo-img" alt="Logo">
+        <div class="company-name">MANA FOONII WARA SHAASH</div>
+        <p style="font-size: 14px; color: #666;">Gabaasa Inveentarii Meeshaalee</p>
+    </header>
+
+    <div class="timestamp-box">
+        Guyyaa: <span id="fullDate"></span> | Sa'a: <span id="fullTime"></span>
+    </div>
+
+    <div class="dashboard">
+        <div class="card card-total">
+            <h3 style="margin:0; font-size: 13px;">Waliigala Meeshaalee</h3>
+            <p id="totalTools">0</p>
+        </div>
+        <div class="card card-alert">
+            <h3 style="margin:0; font-size: 13px;">Suuphaa Barbaadu</h3>
+            <p id="repairCount">0</p>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <div class="input-group">
+            <input type="text" id="tName" placeholder="Maqaa Meeshaa...">
+            <input type="number" id="tQty" placeholder="Baay'ina...">
+            <select id="tStatus">
+                <option value="Hojirra Jira">Hojirra Jira</option>
+                <option value="Suuphaa Barbaada">Suuphaa Barbaada</option>
+                <option value="Balleeffameera">Balleeffameera</option>
+            </select>
+        </div>
+        <button class="btn btn-add" onclick="addTool()">Meeshaa Galmeessi</button>
+        <button class="btn btn-print" onclick="window.print()">Print / PDF Save</button>
+        <a href="index.html" class="btn btn-home">Gara Menu Guddaatti Deebi'i</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Lakk.</th>
+                <th>Maqaa Meeshaa</th>
+                <th>Qty</th>
+                <th>Haala</th>
+                <th class="delete-btn">X</th>
+            </tr>
+        </thead>
+        <tbody id="toolTableBody"></tbody>
+    </table>
+
+    <div class="signature-section">
+        <div class="sig-box">Mallattoo Hojjetaa</div>
+        <div class="sig-box">Mallattoo Finansii<br><small>(Faayo Mohamed Ahmed)</small></div>
+        <div class="sig-box">Mallattoo Hoggansaa<br><small>(Fuad Mohamed Ahmed)</small></div>
+    </div>
+</div>
+
+<script>
+    let tools = JSON.parse(localStorage.getItem("waraShaashTools")) || [];
+
+    function updateUI() {
+        const tbody = document.getElementById("toolTableBody");
+        tbody.innerHTML = "";
+        let total = 0;
+        let repairs = 0;
+
+        tools.forEach((item, i) => {
+            total += parseInt(item.qty);
+            if(item.status !== "Hojirra Jira") repairs++;
+            
+            let badge = item.status === "Hojirra Jira" ? "st-good" : "st-bad";
+            
+            tbody.innerHTML += `<tr>
+                <td>${i + 1}</td>
+                <td>${item.name}</td>
+                <td>${item.qty}</td>
+                <td><span class="status-badge ${badge}">${item.status}</span></td>
+                <td class="delete-btn"><button onclick="deleteTool(${i})" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+            </tr>`;
+        });
+
+        document.getElementById("totalTools").innerText = total;
+        document.getElementById("repairCount").innerText = repairs;
+        localStorage.setItem("waraShaashTools", JSON.stringify(tools));
+    }
+
+    function addTool() {
+        const name = document.getElementById("tName").value;
+        const qty = document.getElementById("tQty").value;
+        const status = document.getElementById("tStatus").value;
+
+        if (name && qty) {
+            tools.push({ name, qty, status });
+            document.getElementById("tName").value = "";
+            document.getElementById("tQty").value = "";
+            updateUI();
+        }
+    }
+
+    function deleteTool(index) {
+        if(confirm("Meeshaa kana haquu barbaaddu?")) {
+            tools.splice(index, 1);
+            updateUI();
+        }
+    }
+
+    // Sa'aatii fi Guyyaa kallaattiin argachuuf
+    function updateDateTime() {
+        const now = new Date();
+        document.getElementById("fullDate").innerText = now.toLocaleDateString('om-ET', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById("fullTime").innerText = now.toLocaleTimeString('om-ET', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+    updateUI();
+</script>
+
+</body>
+</html>

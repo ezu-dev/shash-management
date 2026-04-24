@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHASH General Trading - Main Menu</title>
+    <style>
+        :root { --primary: #1a2a6c; --secondary: #b21f1f; --dark: #0f2027; --gold: #f39c12; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f4f7f9; text-align: center; color: var(--dark); }
+        
+        .hero { background: linear-gradient(to right, #0f2027, #203a43, #2c5364); color: white; padding: 45px 20px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .logo-img { width: 100px; height: 100px; border: 3px solid white; border-radius: 50%; background: white; object-fit: cover; }
+        h1 { margin: 15px 0 5px; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .main-grid { display: grid; grid-template-columns: 1fr; gap: 15px; padding: 20px; max-width: 450px; margin: auto; }
+        
+        .section-title { text-align: left; margin: 15px 5px 5px; font-size: 14px; color: #666; font-weight: bold; text-transform: uppercase; }
+        
+        .nav-card { background: white; padding: 18px; border-radius: 15px; text-decoration: none; color: var(--dark); font-weight: bold; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 6px solid var(--primary); transition: 0.3s; }
+        .nav-card:active { transform: scale(0.97); background: #f0f0f0; }
+        
+        /* Halluu adda addaa daldalaaf */
+        .card-jilmaa { border-left-color: #2980b9; }
+        .card-foonii { border-left-color: #c0392b; }
+        .card-liqii { border-left-color: #f1c40f; }
+        .card-stock { border-left-color: #27ae60; }
+
+        .icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; background: #f8f9fa; }
+
+        .footer { margin-top: 30px; font-size: 11px; color: #999; padding-bottom: 30px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<script>
+    // Password maatii nageenya ragaaleetiif
+    const FAMILY_PASSWORD = "WARRA_SHAASH_2026"; 
+    if (sessionStorage.getItem("isLoggedIn") !== "true") {
+        let pass = prompt("Maaloo Password Maatii Galchi:");
+        if (pass === FAMILY_PASSWORD) {
+            sessionStorage.setItem("isLoggedIn", "true");
+        } else {
+            alert("Password dogoggora! Deebisii yaali.");
+            window.location.reload();
+        }
+    }
+</script>
+
+<div class="hero">
+    <img src="https://raw.githubusercontent.com/ezu-tech/wara-shaash/main/logo.png" class="logo-img" alt="Logo">
+    <h1>SHASH GENERAL TRADING PLC</h1>
+    <p style="font-size: 13px; opacity: 0.8;">Hordoffii Daldala Maatii - Harar</p>
+</div>
+
+<div class="main-grid">
+    
+    <div class="section-title">Gurgurtaa Adda Addaa</div>
+    
+    <a href="Dukkaana_Gurgurtaa.html" class="nav-card card-jilmaa">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="icon-circle">📦</div>
+            <span>Dukkaana Jilmaa</span>
+        </div>
+        <span>➔</span>
+    </a>
+
+    <a href="Gurgurtaa.html" class="nav-card card-foonii">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="icon-circle">🍖</div>
+            <span>Mana Foonii Wara Shaash</span>
+        </div>
+        <span>➔</span>
+    </a>
+
+    <div class="section-title">Hordoffii & Baasii (Jilmaa)</div>
+
+    <a href="Dukkaana_Liqii.html" class="nav-card card-liqii">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="icon-circle">💳</div>
+            <span>Galmee Liqii (Credit)</span>
+        </div>
+        <span>➔</span>
+    </a>
+
+    <a href="Dukkaana_Stock.html" class="nav-card card-stock">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="icon-circle">📊</div>
+            <span>Hordoffii Stock</span>
+        </div>
+        <span>➔</span>
+    </a>
+
+    <a href="Dukkaana_Baasii.html" class="nav-card" style="border-left-color: #7f8c8d;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="icon-circle">💸</div>
+            <span>Galmee Baasii</span>
+        </div>
+        <span>➔</span>
+    </a>
+</div>
+
+<div class="footer">
+    <p>SHASH General Trading PLC Management System</p>
+    <p>Developed by <b>Ezu Tech</b> &copy; 2026</p>
+</div>
+
+</body>
+</html>
+

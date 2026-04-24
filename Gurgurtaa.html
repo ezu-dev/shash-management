@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gurgurtaa - Mana Foonii Wara Shaash</title>
+    <style>
+        :root { --primary: #1a2a6c; --success: #27ae60; --danger: #e74c3c; --gold: #f1c40f; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 10px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; }
+        .logo-img { width: 100px; height: 100px; margin-bottom: 10px; border-radius: 50%; object-fit: cover; }
+        .company-name { font-size: 22px; font-weight: bold; color: var(--primary); margin: 0; text-transform: uppercase; }
+        
+        .nav-menu { display: flex; justify-content: space-around; background: #1a2a6c; padding: 12px; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .nav-menu a { color: white; text-decoration: none; font-size: 13px; font-weight: bold; padding: 5px 10px; border-radius: 5px; transition: 0.3s; }
+        .nav-menu a:hover { background: rgba(255,255,255,0.2); }
+
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .card { padding: 15px; border-radius: 15px; color: white; text-align: center; }
+        .card-sales { background: var(--success); }
+        .card-count { background: var(--primary); }
+
+        .input-group { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ddd; }
+        input, select, button { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-add { background: var(--primary); color: white; font-weight: bold; border: none; cursor: pointer; font-size: 16px; }
+        
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 400px; }
+        th { background: #f1f1f1; padding: 12px; text-align: left; font-size: 13px; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .delete-btn { color: var(--danger); font-weight: bold; cursor: pointer; text-align: center; }
+
+        .btn-back { display: inline-block; margin-top: 20px; text-decoration: none; color: #1a2a6c; font-weight: bold; font-size: 14px; border: 1px solid #1a2a6c; padding: 8px 15px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="logo_shash.png" class="logo-img" alt="Logo">
+        <p class="company-name">MANA FOONII WARA SHAASH</p>
+        <p id="displayDate" style="font-size: 12px; color: #666; margin-top: 5px;"></p>
+    </header>
+
+    <div class="nav-menu">
+        <a href="index.html">🏠 Menu Guddaa</a>
+        <a href="Foonii_Baasii.html">💸 Baasii</a>
+        <a href="Foonii_Hojjettoota.html">👥 Hojjettoota</a>
+        <a href="Foonii_Stock.html">📊 Stock</a>
+    </div>
+
+    <div class="dashboard">
+        <div class="card card-sales">
+            <small>Gurgurtaa Total (ETB)</small>
+            <h2 id="totalSales">0</h2>
+        </div>
+        <div class="card card-count">
+            <small>Kilo Gurgurame (KG)</small>
+            <h2 id="totalWeight">0</h2>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="itemName" placeholder="Maqaa Foonii (Fkn: Cooma)">
+        <input type="number" id="itemWeight" placeholder="Weight/Kilo (KG)" step="0.1">
+        <input type="number" id="itemPrice" placeholder="Gatii 1KG (ETB)">
+        <button class="btn-add" onclick="addSale()">Gurgurtaa Galmeessi</button>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Maqaa</th>
+                    <th>KG</th>
+                    <th>Gatii</th>
+                    <th>Total</th>
+                    <th>X</th>
+                </tr>
+            </thead>
+            <tbody id="salesTable"></tbody>
+        </table>
+    </div>
+
+    <a href="index.html" class="btn-back">⬅ Gara Dashboard Guddaatti</a>
+</div>
+
+<script>
+    let sales = JSON.parse(localStorage.getItem("shashMeatSales")) || [];
+
+    function updateUI() {
+        const tbody = document.getElementById("salesTable");
+        tbody.innerHTML = "";
+        let totalCash = 0;
+        let totalKg = 0;
+
+        sales.forEach((s, i) => {
+            totalCash += s.total;
+            totalKg += s.weight;
+            tbody.innerHTML += `<tr>
+                <td>${s.name}</td>
+                <td>${s.weight}</td>
+                <td>${s.price}</td>
+                <td><b>${s.total.toLocaleString()}</b></td>
+                <td class="delete-btn" onclick="deleteSale(${i})">✕</td>
+            </tr>`;
+        });
+
+        document.getElementById("totalSales").innerText = totalCash.toLocaleString();
+        document.getElementById("totalWeight").innerText = totalKg.toFixed(2);
+        localStorage.setItem("shashMeatSales", JSON.stringify(sales));
+    }
+
+    function addSale() {
+        const name = document.getElementById("itemName").value;
+        const weight = parseFloat(document.getElementById("itemWeight").value);
+        const price = parseFloat(document.getElementById("itemPrice").value);
+
+        if(name && weight && price) {
+            sales.push({ name, weight, price, total: weight * price });
+            document.getElementById("itemName").value = "";
+            document.getElementById("itemWeight").value = "";
+            document.getElementById("itemPrice").value = "";
+            updateUI();
+        } else {
+            alert("Maaloo hunda guuti!");
+        }
+    }
+
+    function deleteSale(index) {
+        if(confirm("Gurgurtaa kana haquu barbaaddu?")) {
+            sales.splice(index, 1);
+            updateUI();
+        }
+    }
+
+    document.getElementById("displayDate").innerText = new Date().toLocaleDateString('om-ET', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    updateUI();
+</script>
+
+</body>
+</html>

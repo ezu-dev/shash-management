@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hojjettoota - Mana Foonii Wara Shaash</title>
+    <style>
+        :root { --primary: #2980b9; --dark: #2c3e50; --success: #27ae60; --gold: #f1c40f; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 10px; }
+        .container { max-width: 850px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; }
+        .logo-img { width: 120px; height: auto; }
+        .company-name { font-size: 26px; font-weight: bold; color: var(--dark); margin: 5px 0; }
+        
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .card { padding: 15px; border-radius: 12px; color: white; text-align: center; }
+        .card-count { background: var(--primary); }
+        .card-salary { background: var(--success); }
+        .card p { font-size: 20px; font-weight: bold; margin: 5px 0 0; }
+
+        .input-section { background: #f8f9fa; padding: 20px; border-radius: 15px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        input { padding: 12px; border: 1px solid #ccc; border-radius: 8px; flex: 1; min-width: 130px; font-size: 15px; }
+        
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-add { background: var(--success); color: white; }
+        .btn-print { background: var(--gold); color: black; margin-top: 10px; }
+        .btn-home { background: #eee; color: #333; margin-top: 10px; text-decoration: none; display: block; text-align: center; }
+
+        .search-box { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid var(--primary); border-radius: 8px; box-sizing: border-box; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: var(--dark); color: white; padding: 12px; text-align: left; }
+        td { border-bottom: 1px solid #eee; padding: 12px; font-size: 14px; }
+
+        .signature-section { margin-top: 60px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; text-align: center; }
+        .sig-box { border-top: 1px solid #000; padding-top: 8px; font-size: 11px; font-weight: bold; }
+
+        @media print {
+            .input-section, .search-box, .btn-home, .delete-btn { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="https://raw.githubusercontent.com/ezu-tech/wara-shaash/main/logo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1046/1046769.png'" class="logo-img" alt="Logo">
+        <div class="company-name">MANA FOONII WARA SHAASH</div>
+        <p style="font-size: 14px; color: #666;">Galmee fi Mindaa Hojjettootaa</p>
+    </header>
+
+    <div class="dashboard">
+        <div class="card card-count">
+            <h3 style="margin:0; font-size: 13px;">Baay'ina Hojjettootaa</h3>
+            <p id="empCount">0</p>
+        </div>
+        <div class="card card-salary">
+            <h3 style="margin:0; font-size: 13px;">Waliigala Mindaa</h3>
+            <p id="totalPayroll">0 ETB</p>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <div class="input-group">
+            <input type="text" id="empName" placeholder="Maqaa Hojjetaa...">
+            <input type="text" id="empRole" placeholder="Gahee Hojii...">
+            <input type="number" id="empSalary" placeholder="Mindaa (ETB)...">
+        </div>
+        <button class="btn btn-add" onclick="addEmployee()">Hojjetaa Galmeessi</button>
+        <button class="btn btn-print" onclick="window.print()">Gabaasa Print / PDF</button>
+        <a href="index.html" class="btn btn-home">Gara Menu Guddaatti Deebi'i</a>
+    </div>
+
+    <input type="text" id="searchBar" class="search-box" placeholder="Hojjetaa barbaaduuf maqaa barreessi..." onkeyup="filterEmployees()">
+
+    <table>
+        <thead>
+            <tr>
+                <th>Lakk.</th>
+                <th>Maqaa</th>
+                <th>Gahee</th>
+                <th>Mindaa</th>
+                <th class="delete-btn">X</th>
+            </tr>
+        </thead>
+        <tbody id="empTableBody"></tbody>
+    </table>
+
+    <div class="signature-section">
+        <div class="sig-box">Mallattoo Hojjetaa</div>
+        <div class="sig-box">Mallattoo Finansii<br><small>(Faayo Mohamed Ahmed)</small></div>
+        <div class="sig-box">Mallattoo Hoggansaa<br><small>(Fuad Mohamed Ahmed)</small></div>
+    </div>
+</div>
+
+<script>
+    let employees = JSON.parse(localStorage.getItem("waraShaashStaff")) || [];
+
+    function updateUI() {
+        const tbody = document.getElementById("empTableBody");
+        tbody.innerHTML = "";
+        let total = 0;
+
+        employees.forEach((emp, i) => {
+            total += emp.salary;
+            tbody.innerHTML += `<tr>
+                <td>${i + 1}</td>
+                <td>${emp.name}</td>
+                <td>${emp.role}</td>
+                <td><b>${emp.salary.toLocaleString()}</b></td>
+                <td class="delete-btn"><button onclick="deleteEmployee(${i})" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+            </tr>`;
+        });
+
+        document.getElementById("empCount").innerText = employees.length;
+        document.getElementById("totalPayroll").innerText = total.toLocaleString() + " ETB";
+        localStorage.setItem("waraShaashStaff", JSON.stringify(employees));
+    }
+
+    function addEmployee() {
+        const name = document.getElementById("empName").value;
+        const role = document.getElementById("empRole").value;
+        const salary = parseFloat(document.getElementById("empSalary").value);
+
+        if (name && salary) {
+            employees.push({ name, role: role || "-", salary });
+            document.getElementById("empName").value = "";
+            document.getElementById("empRole").value = "";
+            document.getElementById("empSalary").value = "";
+            updateUI();
+        }
+    }
+
+    function deleteEmployee(index) {
+        if(confirm("Hojjetaa kana haquu barbaaddu?")) {
+            employees.splice(index, 1);
+            updateUI();
+        }
+    }
+
+    function filterEmployees() {
+        const term = document.getElementById("searchBar").value.toLowerCase();
+        const filtered = employees.filter(e => e.name.toLowerCase().includes(term));
+        renderTable(filtered);
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById("empTableBody");
+        tbody.innerHTML = "";
+        data.forEach((emp, i) => {
+            tbody.innerHTML += `<tr>
+                <td>${i + 1}</td>
+                <td>${emp.name}</td>
+                <td>${emp.role}</td>
+                <td><b>${emp.salary.toLocaleString()}</b></td>
+                <td class="delete-btn">...</td>
+            </tr>`;
+        });
+    }
+
+    updateUI();
+</script>
+
+</body>
+</html>

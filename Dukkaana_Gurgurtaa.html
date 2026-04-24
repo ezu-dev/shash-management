@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gurgurtaa Jilmaa - SHASH General Trading</title>
+    <style>
+        :root { --primary: #0d47a1; --success: #2e7d32; --dark: #263238; --gold: #ffa000; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f3f4; margin: 0; padding: 10px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 3px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
+        .logo-img { width: 100px; height: auto; }
+        .company-name { font-size: 24px; font-weight: bold; color: var(--primary); margin: 5px 0; }
+        
+        .info-bar { display: flex; justify-content: space-between; font-size: 13px; color: #555; margin-bottom: 15px; background: #e3f2fd; padding: 8px; border-radius: 5px; }
+
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .card { padding: 20px; border-radius: 12px; color: white; text-align: center; }
+        .card-sales { background: var(--success); }
+        .card-items { background: var(--primary); }
+        .card p { font-size: 22px; font-weight: bold; margin: 5px 0 0; }
+
+        .input-section { background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; flex: 1; min-width: 130px; font-size: 14px; }
+        
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; font-size: 16px; }
+        .btn-add { background: var(--success); color: white; }
+        .btn-print { background: var(--gold); color: black; margin-top: 10px; }
+        .btn-home { background: #607d8b; color: white; margin-top: 10px; text-decoration: none; display: block; text-align: center; line-height: 2.5; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th { background: var(--dark); color: white; padding: 12px; text-align: left; font-size: 14px; }
+        td { border-bottom: 1px solid #eee; padding: 12px; font-size: 14px; }
+
+        .signature-section { margin-top: 50px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: center; }
+        .sig-box { border-top: 1px solid #333; padding-top: 8px; font-size: 11px; font-weight: bold; color: #333; }
+
+        @media print {
+            .input-section, .btn-home, .delete-btn, .search-box { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; padding: 0; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="https://raw.githubusercontent.com/ezu-tech/wara-shaash/main/logo.png" class="logo-img" alt="Logo">
+        <div class="company-name">SHASH GENERAL TRADING PLC</div>
+        <p style="margin:0; font-size: 14px; color: #666;">Dukkaana Jilmaa - Gabaasa Gurgurtaa</p>
+    </header>
+
+    <div class="info-bar">
+        <span>Guyyaa: <b id="displayDate"></b></span>
+        <span>Sa'aatii: <b id="displayTime"></b></span>
+    </div>
+
+    <div class="dashboard">
+        <div class="card card-sales">
+            <h3 style="margin:0; font-size: 13px;">Gurgurtaa Waliigalaa</h3>
+            <p id="totalSales">0 ETB</p>
+        </div>
+        <div class="card card-items">
+            <h3 style="margin:0; font-size: 13px;">Baay'ina Kaartona/Kiisha</h3>
+            <p id="totalQty">0</p>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <div class="input-group">
+            <input type="text" id="itemName" placeholder="Maqaa Meeshaa (fkn. Ruuzii)...">
+            <select id="unitType">
+                <option value="Kaartona">Kaartona</option>
+                <option value="Kiisha">Kiisha</option>
+                <option value="Saanduqa">Saanduqa</option>
+                <option value="Litrii">Litrii</option>
+            </select>
+            <input type="number" id="itemQty" placeholder="Baay'ina (Qty)...">
+            <input type="number" id="itemPrice" placeholder="Gatii Tokkoo (ETB)...">
+        </div>
+        <button class="btn btn-add" onclick="addSale()">Gurgurtaa Galmeessi</button>
+        <button class="btn btn-print" onclick="window.print()">Gabaasa Print Godhi (PDF)</button>
+        <a href="index.html" class="btn btn-home">Gara Menu Guddaatti Deebi'i</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Lakk.</th>
+                <th>Meeshaa</th>
+                <th>Gosa</th>
+                <th>Qty</th>
+                <th>Waliigala</th>
+                <th class="delete-btn">X</th>
+            </tr>
+        </thead>
+        <tbody id="salesTable"></tbody>
+    </table>
+
+    <div class="signature-section">
+        <div class="sig-box">Mallattoo Kasharii</div>
+        <div class="sig-box">Mallattoo Dhiyeessitootaa<br><small>(Hamaala/Geejjiba)</small></div>
+        <div class="sig-box">Mallattoo Manager<br><small>(Munisaa Mohammed Ahmed)</small></div>
+    </div>
+</div>
+
+<script>
+    let jilmaaSales = JSON.parse(localStorage.getItem("shashJilmaaSales")) || [];
+
+    function updateUI() {
+        const tbody = document.getElementById("salesTable");
+        tbody.innerHTML = "";
+        let totalCash = 0;
+        let totalQty = 0;
+
+        jilmaaSales.forEach((s, i) => {
+            totalCash += s.total;
+            totalQty += parseFloat(s.qty);
+            tbody.innerHTML += `<tr>
+                <td>${i+1}</td>
+                <td>${s.name}</td>
+                <td>${s.unit}</td>
+                <td>${s.qty}</td>
+                <td><b>${s.total.toLocaleString()} ETB</b></td>
+                <td class="delete-btn"><button onclick="deleteSale(${i})" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+            </tr>`;
+        });
+
+        document.getElementById("totalSales").innerText = totalCash.toLocaleString() + " ETB";
+        document.getElementById("totalQty").innerText = totalQty;
+        localStorage.setItem("shashJilmaaSales", JSON.stringify(jilmaaSales));
+    }
+
+    function addSale() {
+        const name = document.getElementById("itemName").value;
+        const unit = document.getElementById("unitType").value;
+        const qty = parseFloat(document.getElementById("itemQty").value);
+        const price = parseFloat(document.getElementById("itemPrice").value);
+
+        if(name && qty && price) {
+            jilmaaSales.push({ name, unit, qty, price, total: qty * price });
+            document.getElementById("itemName").value = "";
+            document.getElementById("itemQty").value = "";
+            document.getElementById("itemPrice").value = "";
+            updateUI();
+        } else {
+            alert("Maaloo hunda guuti!");
+        }
+    }
+
+    function deleteSale(index) {
+        if(confirm("Gurgurtaa kana haquu barbaaddu?")) {
+            jilmaaSales.splice(index, 1);
+            updateUI();
+        }
+    }
+
+    function updateTime() {
+        const now = new Date();
+        document.getElementById("displayDate").innerText = now.toLocaleDateString('om-ET', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById("displayTime").innerText = now.toLocaleTimeString('om-ET');
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+    updateUI();
+</script>
+
+</body>
+</html>

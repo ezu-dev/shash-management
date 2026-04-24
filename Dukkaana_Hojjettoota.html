@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hojjettoota Jilmaa - SHASH General Trading</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #3498db; --success: #27ae60; --dark: #1a252f; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 10px; }
+        .container { max-width: 850px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 3px solid var(--accent); margin-bottom: 20px; padding-bottom: 10px; }
+        .company-name { font-size: 24px; font-weight: bold; color: var(--primary); }
+
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .card { padding: 15px; border-radius: 10px; color: white; text-align: center; }
+        .card-count { background: var(--accent); }
+        .card-salary { background: var(--success); }
+
+        .input-section { background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; flex: 1; min-width: 140px; }
+        
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-add { background: var(--accent); color: white; }
+        .btn-print { background: #f1c40f; color: black; margin-top: 10px; }
+        .btn-home { background: #eee; color: #333; margin-top: 10px; text-decoration: none; display: block; text-align: center; line-height: 2.5; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: var(--primary); color: white; padding: 12px; text-align: left; }
+        td { border-bottom: 1px solid #eee; padding: 12px; font-size: 14px; }
+
+        .signature-section { margin-top: 60px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; text-align: center; }
+        .sig-box { border-top: 1px solid #000; padding-top: 8px; font-size: 11px; font-weight: bold; }
+
+        @media print {
+            .input-section, .btn-home, .delete-btn { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="company-name">SHASH GENERAL TRADING PLC</div>
+        <p style="margin:5px 0; color: #666;">Dukkaana Jilmaa - Galmee Hojjettootaa</p>
+        <small id="printDate"></small>
+    </header>
+
+    <div class="dashboard">
+        <div class="card card-count">
+            <h3 style="margin:0; font-size: 13px;">Baay'ina Hojjettootaa</h3>
+            <p id="totalStaff">0</p>
+        </div>
+        <div class="card card-salary">
+            <h3 style="margin:0; font-size: 13px;">Waliigala Mindaa</h3>
+            <p id="totalSalary">0 ETB</p>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <div class="input-group">
+            <input type="text" id="staffName" placeholder="Maqaa Hojjetaa...">
+            <select id="staffRole">
+                <option value="Kasharii">Kasharii</option>
+                <option value="Hamaala">Hamaala</option>
+                <option value="Dhiyeessituu">Dhiyeessituu</option>
+                <option value="Eegumsa">Eegumsa</option>
+                <option value="Biroo">Biroo</option>
+            </select>
+            <input type="number" id="staffPay" placeholder="Mindaa (ETB)...">
+        </div>
+        <button class="btn btn-add" onclick="addStaff()">Hojjetaa Galmeessi</button>
+        <button class="btn btn-print" onclick="window.print()">Gabaasa Print Godhi</button>
+        <a href="index.html" class="btn btn-home">Gara Menu Guddaatti Deebi'i</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Lakk.</th>
+                <th>Maqaa</th>
+                <th>Gahee Hojii</th>
+                <th>Mindaa</th>
+                <th class="delete-btn">X</th>
+            </tr>
+        </thead>
+        <tbody id="staffTable"></tbody>
+    </table>
+
+    <div class="signature-section">
+        <div class="sig-box">Mallattoo Hojjetaa</div>
+        <div class="sig-box">Mallattoo Finansii</div>
+        <div class="sig-box">Mallattoo Manager<br><small>(Munisaa Mohammed Ahmed)</small></div>
+    </div>
+</div>
+
+<script>
+    let staffList = JSON.parse(localStorage.getItem("shashJilmaaStaff")) || [];
+
+    function updateUI() {
+        const tbody = document.getElementById("staffTable");
+        tbody.innerHTML = "";
+        let totalPay = 0;
+
+        staffList.forEach((s, i) => {
+            totalPay += parseFloat(s.pay);
+            tbody.innerHTML += `<tr>
+                <td>${i+1}</td>
+                <td>${s.name}</td>
+                <td>${s.role}</td>
+                <td><b>${parseFloat(s.pay).toLocaleString()} ETB</b></td>
+                <td class="delete-btn"><button onclick="deleteStaff(${i})" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+            </tr>`;
+        });
+
+        document.getElementById("totalStaff").innerText = staffList.length;
+        document.getElementById("totalSalary").innerText = totalPay.toLocaleString() + " ETB";
+        localStorage.setItem("shashJilmaaStaff", JSON.stringify(staffList));
+    }
+
+    function addStaff() {
+        const name = document.getElementById("staffName").value;
+        const role = document.getElementById("staffRole").value;
+        const pay = document.getElementById("staffPay").value;
+
+        if(name && pay) {
+            staffList.push({ name, role, pay });
+            document.getElementById("staffName").value = "";
+            document.getElementById("staffPay").value = "";
+            updateUI();
+        }
+    }
+
+    function deleteStaff(i) {
+        if(confirm("Hojjetaa kana haquu barbaaddu?")) {
+            staffList.splice(i, 1);
+            updateUI();
+        }
+    }
+
+    function setDate() {
+        document.getElementById("printDate").innerText = new Date().toLocaleString('om-ET');
+    }
+
+    setDate();
+    updateUI();
+</script>
+
+</body>
+</html>

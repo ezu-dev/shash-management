@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baasii Jilmaa - SHASH General Trading</title>
+    <style>
+        :root { --primary: #b21f1f; --dark: #2c3e50; --success: #27ae60; --gold: #f39c12; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f9f9f9; margin: 0; padding: 10px; }
+        .container { max-width: 850px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 3px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
+        .company-name { font-size: 24px; font-weight: bold; color: var(--primary); }
+        
+        .dashboard { display: grid; grid-template-columns: 1fr; margin-bottom: 20px; }
+        .card { padding: 20px; border-radius: 12px; color: white; text-align: center; background: var(--primary); }
+        .card p { font-size: 24px; font-weight: bold; margin: 5px 0 0; }
+
+        .input-section { background: #fff5f5; padding: 20px; border-radius: 12px; border: 1px solid #ffcdd2; margin-bottom: 20px; }
+        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; flex: 1; min-width: 150px; }
+        
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-add { background: var(--primary); color: white; }
+        .btn-print { background: var(--gold); color: white; margin-top: 10px; }
+        .btn-home { background: #eee; color: #333; margin-top: 10px; text-decoration: none; display: block; text-align: center; line-height: 2.5; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: var(--dark); color: white; padding: 12px; text-align: left; }
+        td { border-bottom: 1px solid #eee; padding: 12px; }
+
+        .signature-section { margin-top: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: center; }
+        .sig-box { border-top: 1px solid #333; padding-top: 8px; font-weight: bold; }
+
+        @media print {
+            .input-section, .btn-home, .delete-btn { display: none !important; }
+            .container { box-shadow: none; border: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="company-name">SHASH GENERAL TRADING PLC</div>
+        <p style="margin:5px 0; color: #666;">Dukkaana Jilmaa - Gabaasa Baasii</p>
+        <small id="dateTime"></small>
+    </header>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3 style="margin:0; font-size: 14px;">Waliigala Baasii</h3>
+            <p id="totalExpense">0 ETB</p>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <div class="input-group">
+            <select id="expType">
+                <option value="Kiraa Manaa">Kiraa Manaa</option>
+                <option value="Geejjiba">Geejjiba / Transport</option>
+                <option value="Mindaa Hojjetaa">Mindaa Hojjetaa</option>
+                <option value="Gibira/Guboo">Gibira / Licencing</option>
+                <option value="Baasii Biroo">Baasii Biroo</option>
+            </select>
+            <input type="number" id="expAmount" placeholder="Hamma Qarshii (ETB)...">
+            <input type="text" id="expNote" placeholder="Ibsa dabalataa (fkn. Baatii Bitootessa)...">
+        </div>
+        <button class="btn btn-add" onclick="addExpense()">Baasii Galmeessi</button>
+        <button class="btn btn-print" onclick="window.print()">Print / PDF Save</button>
+        <a href="index.html" class="btn btn-home">Gara Menu Guddaatti Deebi'i</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Lakk.</th>
+                <th>Gosa Baasii</th>
+                <th>Ibsa</th>
+                <th>Qarshii</th>
+                <th class="delete-btn">X</th>
+            </tr>
+        </thead>
+        <tbody id="expenseTable"></tbody>
+    </table>
+
+    <div class="signature-section">
+        <div class="sig-box">Mallattoo Finansii</div>
+        <div class="sig-box">Mallattoo Manager<br><small>(Munisaa Mohammed Ahmed)</small></div>
+    </div>
+</div>
+
+<script>
+    let expenses = JSON.parse(localStorage.getItem("shashJilmaaExp")) || [];
+
+    function updateUI() {
+        const tbody = document.getElementById("expenseTable");
+        tbody.innerHTML = "";
+        let total = 0;
+
+        expenses.forEach((ex, i) => {
+            total += ex.amount;
+            tbody.innerHTML += `<tr>
+                <td>${i+1}</td>
+                <td>${ex.type}</td>
+                <td>${ex.note}</td>
+                <td><b>${ex.amount.toLocaleString()} ETB</b></td>
+                <td class="delete-btn"><button onclick="deleteExp(${i})" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+            </tr>`;
+        });
+
+        document.getElementById("totalExpense").innerText = total.toLocaleString() + " ETB";
+        localStorage.setItem("shashJilmaaExp", JSON.stringify(expenses));
+    }
+
+    function addExpense() {
+        const type = document.getElementById("expType").value;
+        const amount = parseFloat(document.getElementById("expAmount").value);
+        const note = document.getElementById("expNote").value;
+
+        if(amount) {
+            expenses.push({ type, amount, note: note || "-" });
+            document.getElementById("expAmount").value = "";
+            document.getElementById("expNote").value = "";
+            updateUI();
+        }
+    }
+
+    function deleteExp(i) {
+        if(confirm("Baasii kana haquu barbaaddu?")) {
+            expenses.splice(i, 1);
+            updateUI();
+        }
+    }
+
+    function setTime() {
+        const now = new Date();
+        document.getElementById("dateTime").innerText = now.toLocaleString('om-ET');
+    }
+
+    setTime();
+    updateUI();
+</script>
+
+</body>
+</html>

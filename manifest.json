@@ -1,0 +1,15 @@
+{
+  "name": "Wara Shaash System",
+  "short_name": "WaraShaash",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1a2a6c",
+  "theme_color": "#1a2a6c",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/ezu-tech/wara-shaash/main/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

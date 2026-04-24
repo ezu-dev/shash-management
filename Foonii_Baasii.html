@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baasii Guyyaa - Mana Foonii Wara Shaash</title>
+    <style>
+        :root { --primary: #e74c3c; --dark: #2c3e50; --success: #27ae60; --gold: #f1c40f; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 10px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; }
+        .logo-img { width: 120px; height: auto; }
+        .company-name { font-size: 26px; font-weight: bold; color: var(--dark); margin: 5px 0; }
+        
+        .dashboard { display: grid; grid-template-columns: 1fr; margin-bottom: 20px; }
+        .card { padding: 20px; border-radius: 12px; color: white; text-align: center; background: var(--primary); }
+        .card p { font-size: 24px; font-weight: bold; margin: 5px 0 0; }
+
+        .input-section { background: #f8f9fa; padding: 20px; border-radius: 15px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        input { padding: 12px; border: 1px solid #ccc; border-radius: 8px; flex: 1; min-width: 150px; font-size: 15px; }
+        
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-add { background: var(--primary); color: white; }
+        .btn-print { background: var(--gold); color: black; margin-top: 10px; }
+        .btn-home { background: #eee; color: #333; margin-top: 10px; text-decoration: none; display: block; text-align: center; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: var(--dark); color: white; padding: 12px; text-align: left; }
+        td { border-bottom: 1px solid #eee; padding: 12px; }
+
+        .signature-section { margin-top: 60px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; text-align: center; }
+        .sig-box { border-top: 1px solid #000; padding-top: 8px; font-size: 12px; font-weight: bold; }
+
+        @media print {
+            .input-section, .btn-home, .delete-btn { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="https://raw.githubusercontent.com/ezu-tech/wara-shaash/main/logo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1046/1046769.png'" class="logo-img" alt="Logo">
+        <div class="company-name">MANA FOONII WARA SHAASH</div>
+        <p style="font-size: 14px; color: #666;">Gabaasa Baasii Guyyaa</p>
+        <p style="text-align: right; font-size: 12px;">Guyyaa: <span id="displayDate"></span></p>
+    </header>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3 style="margin:0; font-size: 14px;">Waliigala Baasii</h3>
+            <p id="totalExpense">0 ETB</p>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <div class="input-group">
+            <input type="text" id="expName" placeholder="Maqaa Baasii (fkn. Kiree, Humna)...">
+            <input type="number" id="expAmount" placeholder="Gatii (ETB)...">
+        </div>
+        <button class="btn btn-add" onclick="addExpense()">Baasii Galmeessi</button>
+        <button class="btn btn-print" onclick="window.print()">Print / PDF Save</button>
+        <a href="index.html" class="btn btn-home">Gara Menu Guddaatti Deebi'i</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Lakk.</th>
+                <th>Maqaa Baasii</th>
+                <th>Gatii (ETB)</th>
+                <th class="delete-btn">Gocha</th>
+            </tr>
+        </thead>
+        <tbody id="expenseTable"></tbody>
+    </table>
+
+    <div class="signature-section">
+        <div class="sig-box">Mallattoo Hojjetaa</div>
+        <div class="sig-box">Mallattoo Finansii<br><small>(Faayo Mohamed Ahmed)</small></div>
+        <div class="sig-box">Mallattoo Hoggansaa<br><small>(Fuad Mohamed Ahmed)</small></div>
+    </div>
+</div>
+
+<script>
+    let expenses = JSON.parse(localStorage.getItem("waraShaashPro")) || [];
+
+    function updateUI() {
+        const tbody = document.getElementById("expenseTable");
+        tbody.innerHTML = "";
+        let total = 0;
+
+        expenses.forEach((e, i) => {
+            total += e.price;
+            tbody.innerHTML += `<tr>
+                <td>${i+1}</td>
+                <td>${e.name}</td>
+                <td><b>${e.price.toLocaleString()}</b></td>
+                <td class="delete-btn"><button onclick="deleteExpense(${i})" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+            </tr>`;
+        });
+
+        document.getElementById("totalExpense").innerText = total.toLocaleString() + " ETB";
+        localStorage.setItem("waraShaashPro", JSON.stringify(expenses));
+    }
+
+    function addExpense() {
+        const name = document.getElementById("expName").value;
+        const price = parseFloat(document.getElementById("expAmount").value);
+
+        if(name && price) {
+            expenses.push({ name, price });
+            document.getElementById("expName").value = "";
+            document.getElementById("expAmount").value = "";
+            updateUI();
+        }
+    }
+
+    function deleteExpense(index) {
+        if(confirm("Baasii kana haquu barbaaddu?")) {
+            expenses.splice(index, 1);
+            updateUI();
+        }
+    }
+
+    document.getElementById("displayDate").innerText = new Date().toLocaleDateString('om-ET', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    updateUI();
+</script>
+
+</body>
+</html>
