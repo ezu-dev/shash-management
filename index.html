@@ -4,235 +4,177 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHASH Management System</title>
-    <script>
-    window.onload = function() {
-    let access = localStorage.getItem("shash_access");
-    if (access !== "granted") {
-        let pass = prompt("Maaloo Password Maatii Galchi:");
-        if (pass === "Shaash_2026") {
-            localStorage.setItem("shash_access", "granted");
-        } else {
-            alert("Password Dogoggora! Deebisii yaali.");
-            window.location.reload();
-        }
-    }
-}
-        </script>
     <style>
         :root {
-            --primary: #ffffff;
-            --accent: #f1c40f;
-            --card-bg: rgba(255, 255, 255, 0.1);
+            --primary-red: #4b0d0d;
+            --gold: #f1c40f;
+            --glass: rgba(255, 255, 255, 0.05);
         }
 
         body {
             margin: 0;
-            padding: 0;
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top, #4b0d0d, #1a0505, #000000);
             background-attachment: fixed;
             color: white;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 450px;
-            padding: 30px 20px;
-            text-align: center;
         }
 
         /* Header Section */
         header {
-            margin-bottom: 40px;
+            text-align: center;
+            padding: 40px 20px;
         }
 
-        .logo-box {
-            width: 100px;
-            height: 100px;
-            background: white;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border: 3px solid var(--accent);
+        .logo-container {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 25px;
+            display: inline-block;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
         }
 
-        .logo-box img { width: 80%; height: 80%; object-fit: contain; }
+        .logo-container:active { transform: scale(0.95); }
+
+        .logo-img {
+            width: 180px;
+            height: auto;
+            border-radius: 12px;
+        }
 
         h1 {
-            font-size: 24px;
-            font-weight: 800;
-            margin: 10px 0 5px;
-            letter-spacing: 1px;
-            color: #ffffff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            color: var(--gold);
+            font-size: 26px;
             text-transform: uppercase;
+            margin-top: 15px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
         }
 
-        .logo-box {
-    width: 100px;
-    height: 100px;
-    background: #ffffff; /* Duubee adii qulqulluu */
-    border-radius: 50%;
-    margin: 0 auto 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    border: 3px solid #f1c40f; /* Halluu Gold */
-    overflow: hidden; /* Akka logoon boksa keessaa hin baane */
-}
-
-.logo-box img {
-    width: 90%; 
-    height: 90%; 
-    object-fit: contain;
-}
-
-        .tagline {
-            font-size: 13px;
-            color: var(--accent);
-            opacity: 0.9;
-            font-weight: 500;
-        }
-
-        /* Menu Design */
-        .menu-section {
-            text-align: left;
-            margin-top: 30px;
-        }
-
-        .section-label {
-            font-size: 12px;
-            font-weight: bold;
-            color: var(--accent);
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            padding-left: 5px;
-            letter-spacing: 1px;
-            border-left: 3px solid var(--accent);
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            width: 90%;
+            max-width: 400px;
+            padding-bottom: 50px;
         }
 
         .nav-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: var(--glass);
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 20px;
-            border-radius: 18px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
+            border-radius: 20px;
             text-decoration: none;
             color: white;
-            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
         .nav-card:active {
-            transform: scale(0.96);
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(2px);
         }
 
-        .icon-wrapper {
+        .icon-circle {
             width: 50px;
             height: 50px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
+            background: rgba(241, 196, 15, 0.1);
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             margin-right: 15px;
+            border: 1px solid var(--gold);
         }
 
-        .card-info { flex-grow: 1; }
-
-        .card-title {
-            display: block;
+        .title-text {
+            flex-grow: 1;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 17px;
         }
 
-        .card-arrow {
-            font-size: 18px;
-            opacity: 0.5;
-        }
+        .arrow { color: var(--gold); font-size: 20px; }
 
-        /* Footer */
         footer {
-            margin-top: 40px;
-            font-size: 11px;
-            opacity: 0.5;
+            margin-top: auto;
+            padding: 20px;
+            font-size: 12px;
+            opacity: 0.6;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <div class="logo-box">
-            <img src="Shash.png" alt="Logo">
-        </div>
-        <h1>SHASH Trading</h1>
-        <p class="tagline">Hordoffii Daldala Maatii - Harar</p>
-    </header>
-
-    <div class="menu-section">
-        <p class="section-label">Gurgurtaa Adda Addaa</p>
-        
-        <a href="Dukkaana_Gurgurtaa.html" class="nav-card">
-            <div class="icon-wrapper">📦</div>
-            <div class="card-info">
-                <span class="card-title">Dukkaana Jilmaa</span>
-            </div>
-            <span class="card-arrow">➜</span>
-        </a>
-
-        <a href="Gurgurtaa.html" class="nav-card">
-            <div class="icon-wrapper">🍖</div>
-            <div class="card-info">
-                <span class="card-title">Mana Foonii Wara Shaash</span>
-            </div>
-            <span class="card-arrow">➜</span>
-        </a>
-
-        <p class="section-label" style="margin-top: 30px;">Hordoffii & Baasii</p>
-
-        <a href="Dukkaana_Liqii.html" class="nav-card">
-            <div class="icon-wrapper">💳</div>
-            <div class="card-info">
-                <span class="card-title">Galmee Liqii (Credit)</span>
-            </div>
-            <span class="card-arrow">➜</span>
-        </a>
-
-        <a href="Dukkaana_Stock.html" class="nav-card">
-            <div class="icon-wrapper">📊</div>
-            <div class="card-info">
-                <span class="card-title">Hordoffii Stock</span>
-            </div>
-            <span class="card-arrow">➜</span>
-        </a>
-
-        <a href="Dukkaana_Baasii.html" class="nav-card">
-            <div class="icon-wrapper">💸</div>
-            <div class="card-info">
-                <span class="card-title">Galmee Baasii</span>
-            </div>
-            <span class="card-arrow">➜</span>
-        </a>
+<header>
+    <div class="logo-container">
+        <img src="Shash.png" class="logo-img" alt="SHASH LOGO">
     </div>
+    <h1>Warra Shaash</h1>
+    <p style="opacity: 0.7; font-style: italic;">Hordoffii Daldala Maatii</p>
+</header>
 
-    <footer>
-        SHASH General Trading PLC Management System<br>
-        Developed by Ezu Tech © 2026
-    </footer>
+<div class="menu-grid">
+    <a href="Dukkaana_Gurgurtaa.html" class="nav-card">
+        <div class="icon-circle">📦</div>
+        <div class="title-text">Dukkaana Jilmaa</div>
+        <div class="arrow">➜</div>
+    </a>
+
+    <a href="Gurgurtaa.html" class="nav-card">
+        <div class="icon-circle">🍖</div>
+        <div class="title-text">Mana Foonii</div>
+        <div class="arrow">➜</div>
+    </a>
+
+    <a href="Dukkaana_Liqii.html" class="nav-card">
+        <div class="icon-circle">💳</div>
+        <div class="title-text">Galmee Liqii</div>
+        <div class="arrow">➜</div>
+    </a>
+
+    <a href="Dukkaana_Stock.html" class="nav-card">
+        <div class="icon-circle">📊</div>
+        <div class="title-text">Stock & Inventory</div>
+        <div class="arrow">➜</div>
+    </a>
+
+    <a href="Dukkaana_Baasii.html" class="nav-card">
+        <div class="icon-circle">💸</div>
+        <div class="title-text">Galmee Baasii</div>
+        <div class="arrow">➜</div>
+    </a>
 </div>
+
+<footer>
+    © 2026 SHASH PLC | Developed by Ezu Tech
+</footer>
+
+<script>
+    // Password Logic
+    window.onload = function() {
+        if (sessionStorage.getItem("authenticated") !== "true") {
+            let pass = prompt("Maaloo Password Maatii Galchi:");
+            if (pass === SHaash_2026") {
+                sessionStorage.setItem("authenticated", "true");
+            } else {
+                alert("Dogoggora! Deebisii yaali.");
+                window.location.reload();
+            }
+        }
+    }
+</script>
 
 </body>
 </html>
